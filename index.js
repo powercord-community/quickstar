@@ -12,7 +12,7 @@ module.exports = class Star extends Plugin {
 
     inject('star-contents', MessageContent.prototype, 'render', function (args) {
       const { renderButtons } = this.props;
-      if (!this.props.patched) {
+      if (!this.props.patched && renderButtons) {
         this.props.patched = true;
         this.props.renderButtons = (e) => {
           const res = renderButtons(e);
