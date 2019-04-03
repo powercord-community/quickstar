@@ -1,0 +1,13 @@
+.star-reaction-btn {
+    cursor: pointer;
+    height: 1rem;
+    margin-left: 6px;
+    margin-right: 0;
+    opacity: .4;
+    transition: opacity .2s ease;
+    width: 1rem;
+}
+
+.star-reaction-btn:hover {
+    opacity: 1;
+}
