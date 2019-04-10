@@ -38,7 +38,6 @@ module.exports = class Star extends Plugin {
   }
 
   pluginWillUnload () {
-    this.unloadCSS();
     uninject('star-contents');
   }
 };
