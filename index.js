@@ -2,44 +2,51 @@ const { resolve } = require('path');
 const { Plugin } = require('powercord/entities');
 const { forceUpdateElement } = require('powercord/util');
 const { inject, uninject } = require('powercord/injector');
-const { React, getModule, getModuleByDisplayName } = require('powercord/webpack');
+const { React, getModule } = require('powercord/webpack');
 
 module.exports = class Star extends Plugin {
   async startPlugin () {
     this.loadCSS(resolve(__dirname, 'style.css'));
 
     const reactionManager = await getModule([ 'addReaction' ]);
-    const MessageContent = await getModuleByDisplayName('MessageContent');
+    // @todo: make this less stupid
+    const module = await getModule(m => typeof m.default === 'function' && m.default.toString().match(/showEmojiPicker:[^,]+,showMoreUtilities:/));
 
-    inject('star-contents', MessageContent.prototype, 'render', function (args) {
-      const { renderButtons } = this.props;
-      if (!this.props.patched && renderButtons) {
-        this.props.patched = true;
-        this.props.renderButtons = (e) => {
-          const res = renderButtons(e);
-          if (res.props.children && !e.message.reactions.find(r => r.emoji.name === '⭐' && r.me)) {
-            res.props.children.props.children.unshift(
-              React.createElement('img', {
-                src: 'https://canary.discordapp.com/assets/e4d52f4d69d7bba67e5fd70ffe26b70d.svg',
-                alt: 'Star',
-                className: 'star-reaction-btn',
-                onClick: () => reactionManager.addReaction(e.channel.id, e.message.id, {
+    inject('star-button', module, 'default', (args, res) => {
+      const renderer = res.type.type;
+      res.type = (props) => {
+        const res = renderer(props);
+        const reactions = res.props.children.props.children[1];
+        if (reactions) {
+          const renderer = reactions.type;
+          reactions.type = (props) => {
+            const res = renderer(props);
+            res.props.children.unshift(res.props.children[1]);
+            res.props.children.unshift(React.createElement(
+              'div', {
+                className: 'emojiButton-jE9tXC button-1ZiXG9',
+                onClick: () => reactionManager.addReaction(props.channel.id, props.message.id, {
                   animated: false,
                   name: '⭐',
                   id: null
                 })
+              },
+              React.createElement('img', {
+                className: 'emoji icon-3Gkjwa',
+                src: 'https://canary.discordapp.com/assets/e4d52f4d69d7bba67e5fd70ffe26b70d.svg'
               })
-            );
-          }
-          return res;
-        };
-      }
-      return args;
-    }, true);
+            ));
+            return res;
+          };
+        }
+        return res;
+      };
+      return res;
+    });
   }
 
   pluginWillUnload () {
-    uninject('star-contents');
+    uninject('star-button');
     forceUpdateElement('.pc-message', true);
   }
 };
