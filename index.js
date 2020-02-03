@@ -16,7 +16,7 @@ module.exports = class Star extends Plugin {
       const renderer = res.type.type;
       res.type = (props) => {
         const res = renderer(props);
-        const reactions = res.props.children.props.children[1];
+        const reactions = res && res.props.children && res.props.children.props.children && res.props.children.props.children[1];
         if (reactions) {
           const renderer = reactions.type;
           reactions.type = (props) => {
