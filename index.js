@@ -11,12 +11,12 @@ module.exports = class Star extends Plugin {
     const reactionManager = await getModule([ 'addReaction' ]);
     const Message = await getModule(m => m.default && m.default.displayName === 'Message');
     inject('star-button', Message, 'default', (args, res) => {
-      if (!res.props.children[4] || !res.props.children[4].props.children) {
+      if (!res.props.children[1] || !res.props.children[1].props.children) {
         return res;
       }
 
-      const renderer = res.props.children[4].props.children.type.type;
-      res.props.children[4].props.children.type = (props) => {
+      const renderer = res.props.children[1].props.children.type.type;
+      res.props.children[1].props.children.type = (props) => {
         const res = renderer(props);
         const reactions = res && res.props.children && res.props.children.props.children && res.props.children.props.children[1];
         if (reactions) {
