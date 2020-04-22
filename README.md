@@ -1,4 +1,4 @@
-# Star
+# QuickStar
 
 best plugin ever
 

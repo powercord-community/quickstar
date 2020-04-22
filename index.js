@@ -1,22 +1,28 @@
+/*
+ * Copyright (c) 2020 Bowser65
+ * Licensed under the Open Software License version 3.0
+ */
+
 const { resolve } = require('path');
 const { Plugin } = require('powercord/entities');
 const { forceUpdateElement } = require('powercord/util');
 const { inject, uninject } = require('powercord/injector');
 const { React, getModule } = require('powercord/webpack');
 
-module.exports = class Star extends Plugin {
+module.exports = class QuickStar extends Plugin {
   async startPlugin () {
     this.loadCSS(resolve(__dirname, 'style.css'));
 
     const reactionManager = await getModule([ 'addReaction' ]);
     const Message = await getModule(m => m.default && m.default.displayName === 'Message');
     inject('star-button', Message, 'default', (args, res) => {
-      if (!res.props.children[2] || !res.props.children[2].props.children) {
+      if (!res.props.children[2] || !res.props.children[2].props.children || res.props.children[2].props.children.type.__quickstar_uwu === 'owo') {
         return res;
       }
 
+      res.props.children[2].props.children.type.__quickstar_uwu = 'owo';
       const renderer = res.props.children[2].props.children.type.type;
-      res.props.children[2].props.children.type = (props) => {
+      res.props.children[2].props.children.type.type = (props) => {
         const res = renderer(props);
         const reactions = res && res.props.children && res.props.children.props.children && res.props.children.props.children[1];
         if (reactions) {
