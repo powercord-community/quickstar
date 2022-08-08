@@ -1,5 +1,5 @@
-# QuickStar
+# QuickHeart
 
-best plugin ever
+i wanted to spam hearts
 
-it deserves a star
+i can spam hearts easier
